@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.http import HttpResponse
 from .models import *
@@ -16,8 +16,11 @@ def index(request):
             q = User.objects.get(pk=request.POST["Email"])
             password = q.Password
             if password == request.POST["Password"]:
-                return render(request, "app/login.html")
+
+                return redirect("/app/login", request)
+
             else:
+
                 contex = {
                     "error_password": "Invalid Password",
                 }
@@ -25,7 +28,6 @@ def index(request):
 
         except ObjectDoesNotExist:
 
-            print(contex)
             return render(request, "app/index.html", contex)
 
         return render(request, "app/login.html")
@@ -37,9 +39,19 @@ def index(request):
 def register(request):
     if request.method == "POST":
         q = User(
-            Name="Div", Email=request.POST["Email"], Password=request.POST["Password"]
+            Name=request.POST["Name"],
+            Email=request.POST["Email"],
+            Password=request.POST["Password"],
         )
         q.save()
-        return HttpResponse("POST")
+        return redirect("/app/login")
     elif request.method == "GET":
         return render(request, "app/register.html")
+
+
+def login(request):
+    if request.method == "POST":
+        pass
+    elif request.method == "GET":
+
+        return render(request, "app/login.html")
