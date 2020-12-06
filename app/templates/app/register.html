@@ -19,6 +19,12 @@
         display: flex;
         justify-content: space-around;
     }
+    .message{
+
+          display: flex;
+          margin-top:2vh;
+          justify-content: space-around;
+      }
 </style>
 
     </head>
@@ -43,6 +49,15 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
               </form>
               </div>
+              {% if messages %}
+              <div class='message'>
+                {% for message in messages%}
+                      
+                        {{message}}
+                      
+                {%endfor%}
+              </div>
+              {%endif%}
 
             
 <!-- jQuery and JS bundle w/ Popper.js -->

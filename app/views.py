@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-
+from django.urls import reverse
 from django.http import HttpResponse
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from django.core.validators import re
 
 # Create your views here.
 
@@ -19,13 +20,20 @@ def index(request):
 
 def register(request):
     if request.method == "POST":
-        q = User(
-            Name=request.POST["Name"],
-            Email=request.POST["Email"],
-            Password=request.POST["Password"],
-        )
-        q.save()
-        return redirect("/app/login")
+        Email = request.POST["Email"]
+        if validate_email(Email):
+
+            q = User(
+                Name=request.POST["Name"],
+                Email=request.POST["Email"],
+                Password=request.POST["Password"],
+            )
+            q.save()
+            return redirect("/app/login")
+        else:
+            messages.info(request, "Invalidate Email")
+            return redirect("/app/register")
+
     elif request.method == "GET":
         return render(request, "app/register.html")
 
@@ -33,11 +41,13 @@ def register(request):
 def login(request):
     if request.method == "POST":
         try:
+
             q = User.objects.get(pk=request.POST["Email"])
+            Email = q.Email
             password = q.Password
             if password == request.POST["Password"]:
 
-                return render(request, "app/login.html")
+                pass
 
             else:
 
@@ -48,5 +58,17 @@ def login(request):
             messages.info(request, "Invalid Email")
             return redirect("/app")
 
+        return render(request, "app/login.html")
+
     elif request.method == "GET":
         return redirect("/app")
+
+
+def validate_email(Email):
+
+    if re.match("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+", Email) != None:
+        print("validate")
+
+        return 1
+    else:
+        return 0
