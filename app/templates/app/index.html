@@ -28,6 +28,12 @@
       margin-top: 10vh;
       justify-content: space-around;
     }
+    .message{
+
+      display: flex;
+      margin-top:2vh;
+      justify-content: space-around;
+    }
 </style>
 
     </head>
@@ -62,27 +68,36 @@
 
         <!--FORM-->
         <div class="form" >
-        <form method="POST" action="">
+        <form method="POST" action="login">
             {%csrf_token%}
             <div class="form-group">
               <label for="exampleInputEmail1">Email address</label>
               <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="Email">
-              <div >
-                         {{error_email}}
-              </div>
+
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Password</label>
               <input type="password" class="form-control" id="exampleInputPassword1" name="Password">
             </div>
+            {% if messages %}
             <div>
-                      {{error_password}}
+             
             </div>
+            {%endif%}
             
             <button type="submit" class="btn btn-primary" name="submit" value="True">Submit</button>
           </form>
           </div>
+          {% if messages %}
+          <div class='message'>
+            {% for message in messages%}
+                  
+                    {{message}}
+                  
+            {%endfor%}
+          </div>
+          {%endif%}
       
           <div class='registration'>
                  
