@@ -47,28 +47,38 @@ def login(request):
             password = q.Password
             if password == request.POST["Password"]:
 
-                pass
-
+                request.session["login"] = True
             else:
-
+                request.session["login"] = False
                 messages.info(request, "Invalid Password")
                 return redirect("/app")
 
         except ObjectDoesNotExist:
             messages.info(request, "Invalid Email")
+            request.session["login"] = False
             return redirect("/app")
 
-        return render(request, "app/login.html")
+        return redirect("/app/login")
 
     elif request.method == "GET":
-        return redirect("/app")
+        try:
+            if request.session["login"] == True:
+                print(request.session["login"])
+                return render(request, "app/login.html")
+            else:
+                return redirect("/app")
+        except:
+            return redirect("/app")
+
+
+def logout(request):
+    del request.session["login"]
+    return redirect("/app")
 
 
 def validate_email(Email):
 
     if re.match("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+", Email) != None:
-        print("validate")
-
         return 1
     else:
         return 0
