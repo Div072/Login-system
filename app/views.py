@@ -5,6 +5,8 @@ from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.core.validators import re
+from django.contrib.auth.hashers import check_password, make_password
+from django.utils.html import escape
 
 # Create your views here.
 
@@ -20,13 +22,17 @@ def index(request):
 
 def register(request):
     if request.method == "POST":
-        Email = request.POST["Email"]
-        if validate_email(Email):
+        email = request.POST["Email"]
+        passowrd = escape(request.PSOT["Password"])
+        name = escape(request.POST["Name"])
+
+        if validate_email(email):
+            email = escape(request.POST["Email"])
 
             q = User(
-                Name=request.POST["Name"],
-                Email=request.POST["Email"],
-                Password=request.POST["Password"],
+                Name=name,
+                Email=email,
+                Password=password,
             )
             q.save()
             return redirect("/app/login")
@@ -45,7 +51,9 @@ def login(request):
             q = User.objects.get(pk=request.POST["Email"])
             Email = q.Email
             password = q.Password
-            if password == request.POST["Password"]:
+            Password = escape(request.POST["Password"])
+            print(Password)
+            if Password == password:
 
                 request.session["login"] = True
             else:
@@ -63,7 +71,7 @@ def login(request):
     elif request.method == "GET":
         try:
             if request.session["login"] == True:
-                print(request.session["login"])
+
                 return render(request, "app/login.html")
             else:
                 return redirect("/app")
