@@ -23,7 +23,8 @@ def index(request):
 def register(request):
     if request.method == "POST":
         email = request.POST["Email"]
-        passowrd = escape(request.PSOT["Password"])
+        passowrd = escape(request.POST["Password"])
+        password = make_password(passowrd)
         name = escape(request.POST["Name"])
 
         if validate_email(email):
@@ -51,9 +52,10 @@ def login(request):
             q = User.objects.get(pk=request.POST["Email"])
             Email = q.Email
             password = q.Password
+
             Password = escape(request.POST["Password"])
             print(Password)
-            if Password == password:
+            if check_password(Password, password):
 
                 request.session["login"] = True
             else:
